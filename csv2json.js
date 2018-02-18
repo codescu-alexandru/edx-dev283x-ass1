@@ -25,6 +25,7 @@ let jsonWritter = new JsonWritter(getPath(outputFile));
 // create on data event listener
 jsonWritter.on('data', function(data) {
   this.fileStream.write(data);
+  console.log('Done processing file');
 });
 
 // json array buffer collector and index
