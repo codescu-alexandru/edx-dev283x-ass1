@@ -23,21 +23,20 @@ const getPath = (fileName) => {
 let jsonWritter = new JsonWritter(getPath(outputFile));
 
 // create on data event listener
-jsonWritter.on('data', function(data) {
+jsonWritter.on('data', function(jsonObj) {
+  let data = JSON.stringify(jsonObj);
   this.fileStream.write(data);
   console.log('Done processing file');
 });
 
-// json array buffer collector and index
+// json array buffer collector
 let jsonResult = [];
-let index = 0;
 
 csv()
   .fromFile(getPath(inputFile))
   .on('json', (jsonObj) => {
-    // for each row, store the object in the array and increment index
-    jsonResult[index] = jsonObj;
-    index++;
+    // for each row, store the object in the array
+    jsonResult.push(jsonObj);
   })
   .on('done', (error) => {
     // when processing is finished
@@ -46,6 +45,6 @@ csv()
       console.log('Error processing file' + error);
     } else {
       // send event to listener with the resulting array object
-      jsonWritter.emit('data', JSON.stringify(jsonResult));
+      jsonWritter.emit('data', jsonResult);
     }
   });
